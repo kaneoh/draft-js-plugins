@@ -7,7 +7,7 @@ import decodeOffsetKey from '../utils/decodeOffsetKey';
 import getSearchText from '../utils/getSearchText';
 import defaultEntryComponent from './Entry/defaultEntryComponent';
 
-export default class MentionSuggestions extends Component {
+export default class UserMentionSuggestions extends Component {
 
   static propTypes = {
     entityMutability: PropTypes.oneOf([
@@ -217,7 +217,7 @@ export default class MentionSuggestions extends Component {
   onMentionSelect = (mention) => {
     // Note: This can happen in case a user typed @xxx (invalid mention) and
     // then hit Enter. Then the mention will be undefined.
-    if (!mention) {
+    if (!mention || mention.has("unclickable")) {
       return;
     }
 
@@ -246,6 +246,11 @@ export default class MentionSuggestions extends Component {
   };
 
   commitSelection = () => {
+    // fix by Jacky
+    // the pr from https://github.com/draft-js-plugins/draft-js-plugins/pull/706/files
+    if (!this.props.store.getIsOpened()) {
+      return 'not-handled';
+    }
     this.onMentionSelect(this.props.suggestions.get(this.state.focusedOptionIndex));
     return 'handled';
   };
