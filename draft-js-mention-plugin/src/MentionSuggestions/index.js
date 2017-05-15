@@ -41,9 +41,6 @@ export default class UserMentionSuggestions extends Component {
     if (nextProps.suggestions.size === 0 && this.state.isActive) {
       this.closeDropdown();
     }
-    if (nextProps.suggestions.size >= 1 && !this.state.isActive) {
-      this.openDropdown();
-    }
   }
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -217,7 +214,7 @@ export default class UserMentionSuggestions extends Component {
   onMentionSelect = (mention) => {
     // Note: This can happen in case a user typed @xxx (invalid mention) and
     // then hit Enter. Then the mention will be undefined.
-    if (!mention || mention.has("unclickable")) {
+    if (!mention) {
       return;
     }
 
