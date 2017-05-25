@@ -6,7 +6,7 @@ export default ({ children }) => (
     activate = (event) => {
       event.preventDefault();
       event.stopPropagation();
-      this.props.addImageFile();
+      this.props.toggleInput();
     }
 
     preventBubblingUp = (event) => { event.preventDefault(); }
@@ -28,5 +28,5 @@ export default ({ children }) => (
         </div>
       );
     }
-}
+  }
 );
