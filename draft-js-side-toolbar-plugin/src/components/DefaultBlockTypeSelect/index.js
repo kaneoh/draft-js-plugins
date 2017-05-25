@@ -4,7 +4,6 @@ import {
   HeadlineOneButton,
   HeadlineTwoButton,
   BlockquoteButton,
-  CodeBlockButton,
   UnorderedListButton,
   OrderedListButton,
   AddImageButton,
@@ -19,10 +18,10 @@ const DefaultBlockTypeSelect = ({ getEditorState, setEditorState, theme, store }
     UnorderedListButton,
     OrderedListButton,
     BlockquoteButton,
-    CodeBlockButton,
-    AddImageButton
   ];
-
+  if (store.getItem('addImageFile') !== undefined) {
+    structure.push(AddImageButton);
+  }
   return (
     <BlockTypeSelect
       getEditorState={getEditorState}
