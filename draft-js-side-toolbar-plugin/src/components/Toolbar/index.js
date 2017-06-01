@@ -2,6 +2,19 @@
 import React from 'react';
 import DraftOffsetKey from 'draft-js/lib/DraftOffsetKey';
 
+const getRelativeParent = (element) => {
+  if (!element) {
+    return null;
+  }
+
+  const position = window.getComputedStyle(element).getPropertyValue('position');
+  if (position !== 'static') {
+    return element;
+  }
+
+  return getRelativeParent(element.parentElement);
+};
+
 export default class Toolbar extends React.Component {
 
   state = {
@@ -35,19 +48,22 @@ export default class Toolbar extends React.Component {
     const offsetKey = DraftOffsetKey.encode(currentBlock.getKey(), 0, 0);
     // Note: need to wait on tick to make sure the DOM node has been create by Draft.js
     setTimeout(() => {
-      const node = document.querySelectorAll(`[data-offset-key="${offsetKey}"]`)[0];
-      const top = node.getBoundingClientRect().top;
-      const editor = this.props.store.getItem('getEditorRef')().refs.editor;
-      const scrollY = window.scrollY == null ? window.pageYOffset : window.scrollY;
-      this.setState({
-        position: {
-          top: (top + scrollY),
-          left: editor.getBoundingClientRect().left - 80,
-          transform: 'scale(1)',
+      let position;
+      if (isVisible) {
+        const relativeParent = getRelativeParent(this.toolbar.parentElement);
+        const relativeRect = relativeParent ? relativeParent.getBoundingClientRect() : document.body.getBoundingClientRect();
+        const selectionRect = getVisibleSelectionRect(window);
+        position = {
+          top: (selectionRect.top - relativeRect.top) - toolbarHeight,
+          left: (selectionRect.left - relativeRect.left) + (selectionRect.width / 2),
+          transform: 'translate(-50%) scale(1)',
           transition: 'transform 0.15s cubic-bezier(.3,1.2,.2,1)',
-        },
-      });
-    }, 0);
+        };
+      } else {
+        position = { transform: 'translate(-50%) scale(0)' };
+      }
+      this.setState({ position });
+      }, 0);
   }
 
   render() {
