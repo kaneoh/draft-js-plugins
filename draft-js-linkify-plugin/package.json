@@ -1,11 +1,10 @@
 {
-  "name": "draft-js-linkify-plugin",
-  "version": "2.0.0-beta11",
+  "name": "kaneoh-draft-js-linkify-plugin",
+  "version": "0.0.2",
   "description": "Linkify Plugin for DraftJS",
   "author": {
-    "name": "Nik Graf",
-    "email": "nik@nikgraf.com",
-    "url": "http://www.nikgraf.com"
+    "name": "Jacky Chou",
+    "email": "jackychou00@hotmail.com"
   },
   "repository": {
     "type": "git",
