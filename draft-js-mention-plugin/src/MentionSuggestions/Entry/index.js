@@ -39,12 +39,12 @@ export default class Entry extends Component {
   };
 
   render() {
-    const { theme = {}, searchValue } = this.props;
-    const className = this.props.isFocused ? theme.mentionSuggestionsEntryFocused : theme.mentionSuggestionsEntry;
+    const { theme = {}, searchValue, key } = this.props;
+    // const className = this.props.isFocused ? theme.mentionSuggestionsEntryFocused : theme.mentionSuggestionsEntry;
     const EntryComponent = this.props.entryComponent;
     return (
       <EntryComponent
-        className={className}
+        className={this.props.mention.has('unclickable') ? '' : 'child-mention'}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         onMouseEnter={this.onMouseEnter}
@@ -52,6 +52,8 @@ export default class Entry extends Component {
         theme={theme}
         mention={this.props.mention}
         searchValue={searchValue}
+        childMentions={this.props.childMentions}
+        key={key}
       />
     );
   }

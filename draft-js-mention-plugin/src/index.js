@@ -93,6 +93,7 @@ export default (config = {}) => {
     entityMutability = 'SEGMENTED',
     mentionTrigger = '@',
     mentionRegExp = defaultRegExp,
+    isGroupType,
   } = config;
   const mentionSearchProps = {
     ariaProps,
@@ -103,6 +104,7 @@ export default (config = {}) => {
     positionSuggestions,
     mentionTrigger,
     mentionPrefix,
+    isGroupType
   };
   return {
     MentionSuggestions: decorateComponentWithProps(MentionSuggestions, mentionSearchProps),

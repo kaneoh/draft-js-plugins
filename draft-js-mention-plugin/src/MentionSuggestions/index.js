@@ -243,6 +243,84 @@ export default class UserMentionSuggestions extends Component {
     this.props.store.setEditorState(this.props.store.getEditorState());
   };
 
+  getMentionByType = (sourceType) => {
+    const groupMentions = this.props.suggestions.filter((mention) => !mention.has('unclickable') && mention.get('sourceType') === sourceType);
+    const {
+    entryComponent,
+    popoverComponent = <div />, // eslint-disable-line no-unused-vars
+    onClose, // eslint-disable-line no-unused-vars
+    onOpen, // eslint-disable-line no-unused-vars
+    onAddMention, // eslint-disable-line no-unused-vars, no-shadow
+    onSearchChange, // eslint-disable-line no-unused-vars, no-shadow
+    suggestions, // eslint-disable-line no-unused-vars
+    ariaProps, // eslint-disable-line no-unused-vars
+    callbacks, // eslint-disable-line no-unused-vars
+    theme = {},
+    store, // eslint-disable-line no-unused-vars
+    entityMutability, // eslint-disable-line no-unused-vars
+    positionSuggestions, // eslint-disable-line no-unused-vars
+    mentionTrigger, // eslint-disable-line no-unused-vars
+    mentionPrefix, // eslint-disable-line no-unused-vars
+    ...elementProps // eslint-disable-line no-unused-vars
+    } = this.props;
+    return groupMentions.map((mention, index) =>
+      <div>
+        <Entry
+          key={mention.has('id') ? mention.get('id') : mention.get('name')}
+          onMentionSelect={this.onMentionSelect}
+          onMentionFocus={this.onMentionFocus}
+          isFocused={this.state.focusedOptionIndex === index}
+          mention={mention}
+          index={index}
+          id={`mention-option-${this.key}-${index}`}
+          theme={theme}
+          searchValue={this.lastSearchValue}
+          entryComponent={entryComponent || defaultEntryComponent}
+          childMentions={''}
+        />
+      </div>
+    );
+  }
+
+  groupMentionBySourceType = () => {
+    const {
+      entryComponent,
+      popoverComponent = <div />, // eslint-disable-line no-unused-vars
+      onClose, // eslint-disable-line no-unused-vars
+      onOpen, // eslint-disable-line no-unused-vars
+      onAddMention, // eslint-disable-line no-unused-vars, no-shadow
+      onSearchChange, // eslint-disable-line no-unused-vars, no-shadow
+      suggestions, // eslint-disable-line no-unused-vars
+      ariaProps, // eslint-disable-line no-unused-vars
+      callbacks, // eslint-disable-line no-unused-vars
+      theme = {},
+      store, // eslint-disable-line no-unused-vars
+      entityMutability, // eslint-disable-line no-unused-vars
+      positionSuggestions, // eslint-disable-line no-unused-vars
+      mentionTrigger, // eslint-disable-line no-unused-vars
+      mentionPrefix, // eslint-disable-line no-unused-vars
+      ...elementProps // eslint-disable-line no-unused-vars
+    } = this.props;
+    const groupTypes = this.props.suggestions.filter((mention) => mention.has('unclickable'));
+    return groupTypes.map((titleMention, index) =>
+      <div>
+        <Entry
+          key={titleMention.has('id') ? titleMention.get('id') : titleMention.get('name')}
+          onMentionSelect={this.onMentionSelect}
+          onMentionFocus={this.onMentionFocus}
+          isFocused={this.state.focusedOptionIndex === index}
+          mention={titleMention}
+          index={index}
+          id={`mention-option-${this.key}-${index}`}
+          theme={theme}
+          searchValue={this.lastSearchValue}
+          entryComponent={entryComponent || defaultEntryComponent}
+          childMentions={this.getMentionByType(titleMention.get('sourceType'))}
+        />
+      </div>
+    ).toJS();
+  };
+
   commitSelection = () => {
     if (!this.props.store.getIsOpened()) {
       return 'not-handled';
@@ -318,8 +396,8 @@ export default class UserMentionSuggestions extends Component {
       positionSuggestions, // eslint-disable-line no-unused-vars
       mentionTrigger, // eslint-disable-line no-unused-vars
       mentionPrefix, // eslint-disable-line no-unused-vars
+      isGroupType,
       ...elementProps } = this.props;
-
     return React.cloneElement(
       popoverComponent,
       {
@@ -329,7 +407,7 @@ export default class UserMentionSuggestions extends Component {
         id: `mentions-list-${this.key}`,
         ref: (element) => { this.popover = element; },
       },
-      this.props.suggestions.map((mention, index) => (
+      isGroupType ? this.groupMentionBySourceType() : this.props.suggestions.map((mention, index) => (
         <Entry
           key={mention.has('id') ? mention.get('id') : mention.get('name')}
           onMentionSelect={this.onMentionSelect}
@@ -341,6 +419,7 @@ export default class UserMentionSuggestions extends Component {
           theme={theme}
           searchValue={this.lastSearchValue}
           entryComponent={entryComponent || defaultEntryComponent}
+          childMentions={''}
         />
       )).toJS()
     );
